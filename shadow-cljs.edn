@@ -1,0 +1,11 @@
+{:deps true
+ :builds {:app
+          {:target :browser
+           :modules {:main {:entries [app.core]
+                            :init-fn app.core/init}}
+           :devtools {:preloads [uix.preload devtools.preload]}}
+          :server
+          {:target :esm
+           :output-dir "out"
+           :modules {:main {:exports {default server.core/handler}}}
+           :devtools {:enabled false}}}}

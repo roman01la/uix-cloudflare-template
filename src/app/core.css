@@ -1,0 +1,62 @@
+html {
+    box-sizing: border-box;
+}
+
+html * {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font: 400 14px 'Inter', sans-serif;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -moz-font-feature-settings: "liga" on;
+    line-height: 1.4;
+    text-rendering: optimizeLegibility;
+    width: 100vw;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app {
+    max-width: 600px;
+}
+
+.todo-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+}
+
+.title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+.desc {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.status {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}

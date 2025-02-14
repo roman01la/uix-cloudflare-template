@@ -1,0 +1,17 @@
+{
+  "name": "uix-cloudflare-template",
+  "scripts": {
+    "dev": "shadow-cljs -A:dev watch app server & npm run styles-dev",
+    "release": "shadow-cljs -A:dev release app server && npm run styles-release",
+    "styles-dev": "onchange -o '> public/main.css && lightningcss --bundle public/main.css -o public/main.css' -i src/**/*.css -- cat src/**/*.css",
+    "styles-release": "cat src/**/*.css > public/main.css && lightningcss --minify --bundle public/main.css -o public/main.css"
+  },
+  "devDependencies": {
+    "lightningcss-cli": "^1.19.0",
+    "onchange": "^7.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-refresh": "^0.14.0",
+    "shadow-cljs": "2.28.19"
+  }
+}
