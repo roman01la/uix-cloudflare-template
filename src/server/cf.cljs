@@ -15,10 +15,13 @@
   (response (pr-str body)
             (assoc-in init [:headers "Content-Type"] "text/edn")))
 
-(defn response-error []
-  (response-edn {:error "Something went wrong"} {:status 200}))
+(defn response-error
+  ([]
+   (response-edn {:error "Something went wrong"} {:status 200}))
+  ([error]
+   (response-edn {:error error} {:status 200})))
 
-(defn request->end [^js request]
+(defn request->edn [^js request]
   (js-await [text (.text request)]
     (edn/read-string text)))
 
@@ -29,4 +32,5 @@
       (reset! ENV env)
       (reset! CTX ctx)
       (reset! DB (.-DB env))
-      (js/Promise.resolve (handler route request env ctx)))))
+      (js/Promise. (fn [resolve reject]
+                     (resolve (handler route request env ctx)))))))

@@ -4,6 +4,7 @@
 
 #?(:clj
    (defmacro js-await [[a b & bindings] & body]
-     (if (seq bindings)
-       `(shadow.cljs.modern/js-await ~[a b] (js-await ~bindings ~@body))
-       `(shadow.cljs.modern/js-await ~[a b] ~@body))))
+     (let [b `(~'js/Promise.resolve ~b)]
+       (if (seq bindings)
+         `(shadow.cljs.modern/js-await ~[a b] (js-await ~bindings ~@body))
+         `(shadow.cljs.modern/js-await ~[a b] ~@body)))))
