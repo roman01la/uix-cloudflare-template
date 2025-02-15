@@ -3,13 +3,18 @@
             [malli.core :as m]
             [malli.error :as me]))
 
-(defn with-validation [schema->data & {:keys [valid error]}]
+(defn with-validation
+  "schema->data — a map of schema => data
+   valid — a function to call when all data is valid
+   not-valid — a function to call when some data is not valid"
+  [schema->data & {:keys [valid not-valid]}]
   (if (every? #(apply m/validate %) schema->data)
     (valid)
-    (error (->> schema->data
-                (remove #(apply m/validate %))
-                (map #(apply m/explain %))
-                (map me/humanize)))))
+    (not-valid
+      (->> schema->data
+           (remove #(apply m/validate %))
+           (map #(apply m/explain %))
+           (map me/humanize)))))
 
 (def TodoId :string)
 

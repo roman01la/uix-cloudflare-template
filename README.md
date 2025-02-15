@@ -1,13 +1,14 @@
 # uix-cloudflare-template
 
-A template project demonstrating a web app built in UIx/React hosting on Cloudflare, with REST API served from [Cloudflare worker](https://workers.cloudflare.com/) and data stored in SQLite ([Cloudflare D1](https://developers.cloudflare.com/d1/)).
+A template project demonstrating a web app built in UIx/React hosting on Cloudflare, with REST API served from Cloudflare worker and data stored in SQLite (Cloudflare D1).
 
 ## Tech
-- Cloudflare Workers (serverless functions)
-- Cloudflare D1 (SQLite)
+- [Cloudflare Workers](https://workers.cloudflare.com/) (serverless functions)
+- [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite)
 - UIx/React
-- Reitit (routing)
-- Honey SQL (data DSL)
+- [React Query v4](https://tanstack.com/query/v4/) (data fetching)
+- [Reitit](https://github.com/metosin/reitit) (routing)
+- [Honey SQL](https://github.com/seancorfield/honeysql) (data DSL)
 
 ## Project structure
 - `src/app` — frontend code
@@ -18,6 +19,7 @@ A template project demonstrating a web app built in UIx/React hosting on Cloudfl
   - `server.core` — entry point, API handlers and routing (via [reitit](https://github.com/metosin/reitit))
   - `server.db` — database library
   - `server.cf` — wrappers for Cloudflare API
+- `lib.async` — helpers to write async code
 
 ## Setup
 1. Create [Cloudflare account](https://www.cloudflare.com/)
