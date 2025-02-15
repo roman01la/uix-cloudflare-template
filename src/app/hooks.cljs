@@ -1,6 +1,6 @@
 (ns app.hooks
   (:require [uix.core :as uix]
-            [shadow.cljs.modern :refer [js-await]]))
+            [lib.async :refer [js-await]]))
 
 (defn use-fetch
   ([f]

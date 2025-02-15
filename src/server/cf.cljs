@@ -1,7 +1,7 @@
 (ns server.cf
   (:require [clojure.edn :as edn]
             [reitit.core :as r]
-            [shadow.cljs.modern :refer [js-await]]))
+            [lib.async :refer [js-await]]))
 
 (def DB (atom nil))
 (def ENV (atom nil))

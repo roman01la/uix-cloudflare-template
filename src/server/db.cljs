@@ -1,5 +1,5 @@
 (ns server.db
-  (:require [shadow.cljs.modern :refer [js-await]]
+  (:require [lib.async :refer [js-await]]
             [server.cf :as cf]
             [honey.sql :as sql]))
 
