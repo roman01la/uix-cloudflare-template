@@ -2,6 +2,13 @@
 
 A template project demonstrating a web app built in UIx/React hosting on Cloudflare, with REST API served from [Cloudflare worker](https://workers.cloudflare.com/) and data stored in SQLite ([Cloudflare D1](https://developers.cloudflare.com/d1/)).
 
+## Tech
+- Cloudflare Workers (serverless functions)
+- Cloudflare D1 (SQLite)
+- UIx/React
+- Reitit (routing)
+- Honey SQL (data DSL)
+
 ## Project structure
 - `src/app` — frontend code
   - `app.core` — UI code 
