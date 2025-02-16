@@ -6,6 +6,7 @@ A template project demonstrating a web app built in UIx/React hosting on Cloudfl
 - [Cloudflare Workers](https://workers.cloudflare.com/) (serverless functions)
 - [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite)
 - UIx/React
+- [TailwindCSS](https://tailwindcss.com/) and [DaisyUI](https://daisyui.com/)
 - [React Query v4](https://tanstack.com/query/v4/) (data fetching)
 - [Reitit](https://github.com/metosin/reitit) (routing)
 - [Honey SQL](https://github.com/seancorfield/honeysql) (data DSL)

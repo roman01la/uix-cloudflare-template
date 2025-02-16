@@ -4,34 +4,52 @@
             [app.api :as api]
             [app.hooks :as hooks]))
 
+(defui text-field [props]
+  ($ :input.input.input-bordered.w-full.max-w-xs.text-zinc-900 props))
+
 (defui todo-readonly [{:keys [item on-click]}]
   (let [{:keys [id title description due_date status]} item]
-    ($ :.todo-item {:on-click on-click}
-       ($ :h3.title title)
-       ($ :.desc description)
-       ($ :.row
-        ($ :div (str "Due date: " (.toLocaleString (js/Date. due_date))))
-        ($ :.status {:style {:background-color (get {"pending" "red"
-                                                     "completed" "green"}
-                                                    status)}})))))
+    ($ :.card.bg-primary.text-primary-content.w-96 {:on-click on-click}
+       ($ :.card-body
+         ($ :h3.card-title title)
+         ($ :div description)
+         ($ :.flex.items-center.gap-4
+          ($ :div (str "Due date: " (.toLocaleString (js/Date. due_date))))
+          ($ :.status {:style {:background-color (get {"pending" "red"
+                                                       "completed" "green"}
+                                                      status)}}))))))
 
 (defui todo-edit [{:keys [item on-save on-cancel on-delete]}]
   (let [[{:keys [id title description due_date status] :as item} set-state] (uix/use-state item)]
-    ($ :.todo-item
-       ($ :input.title {:value title
+    ($ :.card.bg-primary.text-primary-content.w-96
+       ($ :.card-body
+         ($ text-field {:value title
+                        :placeholder "Title"
                         :on-change #(set-state assoc :title (.. % -target -value))})
-       ($ :input.desc {:value description
-                       :on-change #(set-state assoc :description (.. % -target -value))})
-       ($ :.row
-          ($ :input {:type :date
-                     :value due_date
-                     :on-change #(set-state assoc :due_date (.. % -target -value))})
-          ($ :button {:on-click #(on-save item)}
-             "Save")
-          ($ :button {:on-click on-cancel}
-             "Cancel")
-          ($ :button {:on-click on-delete}
-             "×")))))
+         ($ text-field {:value description
+                        :placeholder "Description"
+                        :on-change #(set-state assoc :description (.. % -target -value))})
+         ($ text-field {:type :date
+                        :value due_date
+                        :on-change #(set-state assoc :due_date (.. % -target -value))})
+         ($ :.flex.justify-between.gap-x-2
+           ($ :button.btn {:on-click #(on-save item)}
+              "Save")
+           ($ :button.btn {:on-click on-cancel}
+              "Cancel")
+           ($ :.flex-1)
+           ($ :button.btn.btn-circle {:on-click on-delete}
+              ($ :svg
+                 {:xmlns "http://www.w3.org/2000/svg"
+                  :className "h-6 w-6"
+                  :fill "none"
+                  :viewBox "0 0 24 24"
+                  :stroke "currentColor"}
+                 ($ :path
+                    {:strokeLinecap "round"
+                     :strokeLinejoin "round"
+                     :strokeWidth "2"
+                     :d "M6 18L18 6M6 6l12 12"}))))))))
 
 (defui todo-create [{:keys [on-save]}]
   (let [[{:keys [title description due_date] :as item} set-state]
@@ -39,17 +57,23 @@
                         :description ""
                         :due_date ""
                         :status "pending"})]
-    ($ :.todo-item
-       ($ :input.title {:value title
-                        :on-change #(set-state assoc :title (.. % -target -value))})
-       ($ :input.desc {:value description
-                       :on-change #(set-state assoc :description (.. % -target -value))})
-       ($ :.row
-          ($ :input {:type :date
-                     :value due_date
-                     :on-change #(set-state assoc :due_date (.. % -target -value))})
-          ($ :button {:on-click #(on-save item)}
-             "Create")))))
+    ($ :.card.bg-primary.text-primary-content.w-96
+       ($ :.card-body
+         ($ text-field
+            {:value title
+             :placeholder "Title"
+             :on-change #(set-state assoc :title (.. % -target -value))})
+         ($ text-field
+            {:value description
+             :placeholder "Description"
+             :on-change #(set-state assoc :description (.. % -target -value))})
+         ($ :.flex.gap-x-2
+            ($ text-field
+               {:type :date
+                :value due_date
+                :on-change #(set-state assoc :due_date (.. % -target -value))})
+            ($ :button.btn {:on-click #(on-save item)}
+               "Create"))))))
 
 (defui todo [{:keys [item]}]
   (let [{:keys [id] :as item} item
@@ -68,12 +92,13 @@
 (defui app []
   (let [{:keys [data isLoading isError isSuccess]} (hooks/use-query [:todos] api/get-todos+)
         create-todo (hooks/use-mutation api/create-todo+ :invalidates [:todos])]
-    ($ :.app
+    ($ :.flex.items-center.justify-center.h-screen
+      {:data-theme :light}
       (cond
         isLoading ($ :p "Loading...")
         isError ($ :p "Couldn't load data")
         isSuccess
-        ($ :<>
+        ($ :.flex.flex-col.gap-y-2
           (for [item data]
             ($ todo {:key (:id item)
                      :item item}))
