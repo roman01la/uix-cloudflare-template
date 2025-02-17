@@ -5,6 +5,7 @@ A template project demonstrating a web app built in UIx/React hosting on Cloudfl
 ## Tech
 - [Cloudflare Workers](https://workers.cloudflare.com/) (serverless functions)
 - [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite)
+- [Cloudflare Durable Objects](https://developers.cloudflare.com/durable-objects/) (shared state for coordinating multiple clients)
 - UIx/React
 - [TailwindCSS](https://tailwindcss.com/) and [DaisyUI](https://daisyui.com/)
 - [React Query v4](https://tanstack.com/query/v4/) (data fetching)
@@ -30,6 +31,17 @@ A template project demonstrating a web app built in UIx/React hosting on Cloudfl
 ## Create database
 - Apply db schema to local instance `npx wrangler d1 execute DB --file=./resources/schema.sql`
 - And to production/remote instance `npx wrangler d1 execute DB --remote --file=./resources/schema.sql`
+
+## Durable Objects
+
+_Distributed state in Cloudflare's network for coordinating multiple clients, see [docs](https://developers.cloudflare.com/durable-objects/) for more info_
+
+Some general and cljs specific notes on Durable Objects
+
+- Durable Object (DO) classes are created via `defclass` macro that extends base `DurableObject` class
+- Each DO class has to be registered and binded in `wrangler.toml` config
+- DO classes have to be exported, `shadow-cljs.edn` build config demonstrates how to create JavaScript ESM module exports
+- DOs can't implement protocols other than default `Object` protocol, since implementation of protocols in cljs breaks DO's runtime requirements (transparent de/serialization of data coming in and out of DOs)
 
 ## Development
 ```shell

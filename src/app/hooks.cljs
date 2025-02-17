@@ -1,5 +1,6 @@
 (ns app.hooks
-  (:require [uix.core :as uix :refer [$ defui defhook]]
+  (:require [app.api :as api]
+            [uix.core :as uix :refer [$ defui defhook]]
             ["@tanstack/react-query" :as rq]
             [cljs-bean.core :as bean]))
 
@@ -35,3 +36,12 @@
       (-invoke
         ([this data]
          (.mutate mutation data))))))
+
+(defhook use-presence [uid]
+  (let [{:keys [data refetch]} (use-query [:presence] #(api/update-presence+ uid))]
+    (uix/use-effect
+      (fn []
+        (let [id (js/setInterval refetch 3000)]
+          #(js/clearInterval id)))
+      [refetch])
+    data))

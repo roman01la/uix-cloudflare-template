@@ -14,6 +14,14 @@ assets = { directory = "./public" }
 enabled = true
 
 [[d1_databases]]
-binding = "{{binding name}}"
-database_name = "{{db name}}"
+binding = "DB"
+database_name = "DB"
 database_id = "{{db id}}"
+
+[[durable_objects.bindings]]
+name = "DO_PRESENCE"
+class_name = "PresenceDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["PresenceDurableObject"]

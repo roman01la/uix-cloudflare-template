@@ -32,3 +32,6 @@
 
 (defn get-todos+ []
   (api-request+ "/todos"))
+
+(defn update-presence+ [uid]
+  (api-request+ (str "/presence?rid=1&uid=" uid)))

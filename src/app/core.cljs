@@ -89,8 +89,20 @@
       ($ todo-readonly {:item item
                         :on-click #(set-state assoc :editing? true)}))))
 
+(defui user-presence [{:keys [users]}]
+  ($ :.relative.h-3
+    (map-indexed
+      (fn [idx uid]
+        ($ :.w-3.h-3.rounded-full.bg-green-500.absolute.border-2.border-white
+           {:key uid
+            :style {:left (* idx 8)}}))
+      users)))
+
+(defonce uid (str (js/Date.now)))
+
 (defui app []
-  (let [{:keys [data isLoading isError isSuccess]} (hooks/use-query [:todos] api/get-todos+)
+  (let [presence (hooks/use-presence uid)
+        {:keys [data isLoading isError isSuccess]} (hooks/use-query [:todos] api/get-todos+)
         create-todo (hooks/use-mutation api/create-todo+ :invalidates [:todos])]
     ($ :.flex.items-center.justify-center.h-screen
       {:data-theme :light}
@@ -99,6 +111,7 @@
         isError ($ :p "Couldn't load data")
         isSuccess
         ($ :.flex.flex-col.gap-y-2
+          ($ user-presence {:users presence})
           (for [item data]
             ($ todo {:key (:id item)
                      :item item}))

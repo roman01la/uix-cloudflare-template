@@ -1,20 +1,39 @@
 (ns server.core
-  (:require [reitit.core :as r]
+  (:require ["cloudflare:workers" :refer [DurableObject]]
+            [reitit.core :as r]
             [lib.async :refer [js-await]]
+            [server.cf.durable-objects :as do]
             [server.db :as db]
-            [server.cf :as cf]
+            [server.cf :as cf :refer [defclass]]
             [server.schema :as schema]))
+
+;; usage example of Durable Objects as a short-lived state
+;; for user presence tracking in multiplayer web app
+(defclass ^{:extends DurableObject} PresenceDurableObject [ctx env]
+  Object
+  (constructor [this ctx env]
+    (super ctx env))
+
+  (add-user-presence+ [this id timestamp]
+    (js-await [_ (do/storage-put+ ctx id timestamp)
+               users (do/storage-list+ ctx)
+               now (js/Date.now)]
+      (doseq [[id _] (->> (cf/js->clj users)
+                          (filter (fn [[id ts]] (> (- now ts) 10000))))]
+        (do/storage-delete+ ctx id))
+      (do/storage-list+ ctx))))
 
 (def router
   (r/router
     ["/api"
      ["/todos" ::todos]
-     ["/todos/:id" ::todo]]))
+     ["/todos/:id" ::todo]
+     ["/presence" ::presence]]))
 
 ;; args:
 ;;  route: Reitit route data
 ;;  request: js/Request object https://developers.cloudflare.com/workers/runtime-apis/request/
-;;  env: Environment object containig env vars and bindings to Cloudflare services https://developers.cloudflare.com/workers/configuration/environment-variables/
+;;  env: Environment object containing env vars and bindings to Cloudflare services https://developers.cloudflare.com/workers/configuration/environment-variables/
 ;;  ctx: The Context API provides methods to manage the lifecycle of your Worker https://developers.cloudflare.com/workers/runtime-apis/context/
 (defmulti handle-route (fn [route request env ctx]
                          [(-> route :data :name) (keyword (.-method ^js request))]))
@@ -77,6 +96,17 @@
       :not-valid
       (fn [errors]
         (cf/response-error errors)))))
+
+(defmethod handle-route [::presence :GET] [{:keys [query-params] :as req} request env ctx]
+  (let [{:keys [rid uid]} query-params
+        presence-do (do/name->instance "DO_PRESENCE" rid)]
+    (js-await [room (.add-user-presence+ presence-do uid (js/Date.now))
+               ;; only JS data types can go in/out of Durable Objects,
+               ;; so js->clj conversion has ot be done after the data is returned
+               ;; (Durable Objects is essentially a distributed state in Cloudflare's network,
+               ;; which means that data that's passed around has to be serialized/deserialized)
+               users (keys (cf/js->clj room))]
+      (cf/response-edn {:result users} {:status 200}))))
 
 ;; entry point
 (def handler

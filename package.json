@@ -4,7 +4,7 @@
     "dev": "shadow-cljs -A:dev watch app server & npm run styles-dev",
     "release": "shadow-cljs -A:dev release app server && npm run styles-release",
     "styles-dev": "npx @tailwindcss/cli -i ./src/app/core.css -o ./public/main.css --watch",
-    "styles-release": "npx @tailwindcss/cli -i ./src/app/core.css -o ./public/main.css"
+    "styles-release": "npx @tailwindcss/cli -i ./src/app/core.css -o ./public/main.css --minify"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.0.6",
