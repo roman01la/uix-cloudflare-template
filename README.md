@@ -20,7 +20,9 @@ A template project demonstrating a web app built in UIx/React hosting on Cloudfl
 - `src/server` — Cloudflare/backend code
   - `server.core` — entry point, API handlers and routing (via [reitit](https://github.com/metosin/reitit))
   - `server.db` — database library
+  - `server.schema` — Malli schema for DB operations
   - `server.cf` — wrappers for Cloudflare API
+  - `server.cf.durable-objects` — wrappers for Durable Objects API
 - `lib.async` — helpers to write async code
 
 ## Setup
